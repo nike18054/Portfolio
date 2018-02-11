@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Nicholas Glantz</title>
+  <!--link rel="icon" href="Images/NGfavicon1.png"-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!--bootsrap css-->
+  <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.css"> -->
+  <!-- JAVASCRIPT files-->
+  <!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+  <!-- <script src="js/bootstrap.js"></script> -->
+  <!-- <script src="js/bootstrap.min.js"></script> -->
+
+  <style>
+    h4 {
+      line-height: 200%;
+    }
+    code {
+      font-size: 82%;
+    }
+    #background1{
+      padding-top:50px;
+      height:100%; color: #fff;
+      padding-bottom: 50px;
+      background: #2d5686;
+    }
+    #section1 {padding-top:50px;margin-left: 15%; margin-right: 15%; padding: 50px 50px 50px 50px; border-radius: 10px; height:90%;color: #000; background-color: #fff;}
+    /* Remove the navbar's default rounded borders and increase the bottom margin */
+    .navbar {
+      margin-bottom: 0px;
+      border-radius: 15px;
+    }
+    #schools:hover {
+
+    }
+
+    /* Makes navbar opaque on hover*/
+    .navbar-inverse {
+      z-index: 1;
+      opacity: 0.90;
+      filter: alpha(opacity=90); /* For IE8 and earlier */
+    }
+    .navbar-inverse:hover {
+      opacity: 1.0;
+      filter: alpha(opacity=100); /* For IE8 and earlier */
+    }
+
+    .navbar .navbar-nav {
+       float: none;
+   }
+
+   .navbar .navbar-collapse {
+       text-align: center;
+   }
+
+   .navbar {
+     width: 100%;
+     margin: 0 auto;
+     margin-bottom: 60px;
+   }
+
+   .resize{
+     max-width:100%;
+     max-height:100%;
+   }
+   .resize:hover{
+     cursor: pointer;
+     opacity: 0.9;
+   }
+   .dropdown:hover .dropdown-menu {
+     display: block;
+   }
+   .dropdown-menu {
+     margin-top: 0px;
+   }
+  </style>
+
+</head>
+
+<body id="background1">
+
+  <!--NAVBAR-->
+  <div class="container">
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+
+              <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                            <!--Home Navbar-->
+            <li><a href="index.html"> Home </a></li>
+
+              <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                            <!--Resume Navbar-->
+            <li><a href="resume.html"> Resume </a></li>
+
+            <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                          <!--Articles Navbar-->
+            <li class="active dropdown"><a class="dropdown-toggle" href="articles.html"> Articles
+              <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="cs195.html">CS195 Web Dev 1</a></li>
+                <li><a href="powershell.html">PowerShell Scripts</a></li>
+                <li><a href="discordbot.html">Discord Bots</a></li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div id="section1">
+
+    <div class="row">
+      <h1 style="text-align: center;">Taking an OEM image to a Base image script</h1>
+      <hr>
+      <h4>
+        &nbsp;I created this script to automate the process of creating a base build image on a new machine.
+        At my workplace I am set with the responsibilities of applying base images on new machines we recieve including desktops, laptops, and tablets.
+        Once the base image is applied, we can add it to the domain and apply a few other things to get it ready for deployment.
+      </h4>
+      <h4>
+        &nbsp;This script consist of a package type script and an automated sysprep script. Prior to creating this script there were a few other
+        scripts we had to execute and searching the network for them was a pain. So I decided to package many scripts together in one script so it
+        simplifies the process and reduces room for human error.
+      </h4>
+      <h4>
+        &nbsp;Before starting, I am using a .NET Framework Class called System.Windows which requires an assembly. You can use this code to use the class.
+      </h4>
+      <div class="well well-sm">
+        <code>Add-Type -AssemblyName PresentationFramework</code>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <h3>
+        <b>Step 1:</b> Only allowing local administrator to use script.
+      </h3>
+      <h4>
+        For this script I automated everything down to the sysprep process. At my workplace we use a few local accounts for managing the machine if it cannot connect
+        to the domain. When creating the base image we use one of the local accounts. We want to still use that local account after running sysprep. After
+        we run sysprep through OOBE it will ask us who is using this computer and it will prompt you to enter a username. You can not use the same username if you
+        don't delete it prior to running sysprep. For this reason I enable the local administrator account and log into it prior to running this script.
+        This block of code will not allow the script to execute unless you are logged in as the local administrator account.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##Checks to see if user is logged in as the local Administrator account<br>
+          if(!($env:USERNAME -eq "Administrator")){<br>
+          &nbsp;&nbsp;$AdminAcc = [System.Windows.MessageBox]::Show('Please log in as the local Administrator account to continue the Base Build Script. Press Yes to open Local User and Group Manager. Press No to log off','Error!', 'YesNoCancel','Error')<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;switch ($AdminAcc){<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;'Yes' {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lusrmgr<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;'No' {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; logoff<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;exit<br>
+          }
+        </code>
+      </div>
+      <h4>
+        This will prompt the user only if the user is not logged in as the local administrator account. This block of code will be skipped if the user is logged in as the local administrator. If you click yes it will take you to the local user and group manager
+        so you can enable the local administrator account.
+        If you choose no it will log you off so you can log in as local administrator. You can always cancel.
+      </h4>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 2:</b> Declaring some variables.
+      </h3>
+      <h4>
+        I am going to declare some variables to specify the path to the other scripts I am including in this script.
+        I like to use a really self explanitory naming method that makes it easy to ready varibles.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ## Variables<br>
+          $sysprepscript = '\\NETWORK\PATH\RunPriorToSysprep.ps1'<br>
+          $sysprepautomated = '\\NETWORK\PATH\automatedsysprep.bat'<br>
+          $sysprepdirectory = 'C:\Windows\System32\Sysprep'
+        </code>
+      </div>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 3:</b> Copy and paste.
+      </h3>
+      <h4>
+        This step I copy the RunPriorToSysprep.ps1 and automatedsysprep.bat to the sysprep directory.
+        I will go in details later what the RunPriorToSysprep.ps1 and automatedsysprep.bat consist of.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ## Copy and Paste<br>
+          copy -Path $sysprepscript -Destination $sysprepdirectory<br>
+          copy -Path $sysprepautomated -Destination $sysprepdirectory
+        </code>
+      </div>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 4:</b> Windows 10 Tile clean up.
+      </h3>
+      <h4>
+        I run this part of the script only on Windows 10 machines. This script will eliminate the bloatware tiles that are preloaded into Windows 10.
+        I did not create this script, it was at my workplace when I got there. This is a really great script and I think it was found on the internet. It
+        looks a lot like the script in this link <a href="https://github.com/W4RH4WK/Debloat-Windows-10/blob/master/scripts/remove-default-apps.ps1" target="_blank">
+        https://github.com/W4RH4WK/Debloat-Windows-10/blob/master/scripts/remove-default-apps.ps1</a>. I did
+        edit it a little bit to better suit the needs for our build process. I created a tutorial on this script alone.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ## Run Windows10-Initial-Setup.ps1<br>
+          & '\\NETWORK\PATH\Windows10TileCleanup.ps1'
+        </code>
+      </div>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 5:</b> Remove any version of Office.
+      </h3>
+      <h4>
+        At my workplace we push our own version of Office along with the license through SCCM. This can cause problems if there is a version of Office currently installed
+        on the machine. There is a tool to <a href="https://support.office.com/en-us/article/Uninstall-Office-from-a-PC-9dd49b83-264a-477a-8fcc-2fdf5dbf61d8" target="_blank">remove any installation of Office</a>.
+        We use the <a href="https://aka.ms/diag_officeuninstall" target="_blank">uninstall tool</a> located on our network. I use this block of code to start the tool.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##removes any version of Office currently installed on the pc<br>
+          Start-Process '\\NETWORK\PATH\O15CTRRemove.diagcab' -Wait
+        </code>
+      </div>
+      <h4>
+        I use the <code> -Wait </code> parameter so the code will wait until the office uninstaller is finished before continuing. I do that because the
+        next part of the script will be installing software and it can trip up the system trying to uninstall and install at the same time.
+      </h4>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 6:</b> Install base applications.
+      </h3>
+      <h4>
+        We have a set of base applications we install on all of our machines. The base applications come from <a href="https://ninite.com/" target="_blank">Ninite</a> and there is a batch file that
+        installs the most current versions. If you haven't check out <a href="https://ninite.com/" target="_blank">Ninite</a> I definitly recommend it, and as I said earlier you can create a batch script
+        that will go out and install a package of applications automatically. In this script I will have the batch file excecute so it will go out and grab those applications.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##Installs base apps<br>
+          Start-Process '\\NETWORK\PATH\INSTALLBASEAPP.BAT' -Wait
+        </code>
+      </div>
+      <p>if you would like to learn how to create the batch file to go out to Ninite and install the base apps <a href="#">click here</a>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 7:</b> Install McAfee.
+      </h3>
+      <h4>
+        We use a few anti-virus and malware protection services but McAfee is one of them and we have an installer on the network. When I found
+        the folder to install McAfee it had a read me file inside of it with instructions of how to install. The instructions were: Copy the installer
+        to the root directory of the machine. Run the installer. So I created a little side script that did that and placed it in the McAfee installer folder located
+        on the network. I use this block of code to excecute it.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##Installs McAfee Agent<br>
+          & '\\NETWORK\PATH\Install.ps1' -Wait
+        </code>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 8:</b> Check for errors installing Base apps.
+      </h3>
+      <h4>
+        Occasionally an app or two will have troubles installing and won't fully install. I created a block of code to check to see if the directories
+        of the apps are missing. If they are I wanted a prompt to notfiy the user that there was an error installing the base app package. I also wanted
+        the prompt to give a choice to retry the installation.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##If base app installation wasn't succesful prompt user for retry.<br>
+          if(!( (Test-Path 'C:\Program Files\7-Zip') -and (Test-Path 'C:\Program Files (x86)\Adobe') -and (Test-Path 'C:\Program Files\Microsoft Silverlight') -and (Test-Path 'C:\Program Files (x86)\K-Lite Codec Pack' ) )){<br>
+          &nbsp;&nbsp;$erroraction = [System.Windows.MessageBox]::Show('There was an error installing base app package. Would you like to retry?','Error!', 'YesNo','Error')<br>
+          &nbsp;&nbsp;switch ($erroraction){<br>
+          &nbsp;&nbsp;'Yes' {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;rmdir "C:\LOGS\*" -ErrorAction SilentlyContinue<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;Start-Process '\\NETWORK\PATH\INSTALLBASEAPP.BAT' -Wait<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          <br>
+          &nbsp;&nbsp;'No' {<br>
+          <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </code>
+      </div>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 9:</b> Install process success prompt.
+      </h3>
+      <h4>
+        Once everything is installed I wanted to notify the user that the script executed succesfully. I did that with this code.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          [System.Windows.MessageBox]::Show('The build script succesfully executed!','Success!','Ok','Information')
+        </code>
+      </div>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>Step 10:</b> Prompt user to start Sysprep.
+      </h3>
+      <h4>
+        After everything was installed I still had to run sysprep manually. This didn't take that long but I figured why not just streamline the whole process
+        in one script. So I did but I still didn't want sysprep to run automatically leaving the user unable to make any further custimazations if needed.
+        So I created this block of script to prompt the user if they would like to continue through the Sysprep process.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##Prompts user to continue to automated sysprep process.<br>
+          $syspreprun = [System.Windows.MessageBox]::Show('Would you like to continue to automate the sysprep process? Doing so will not allow you to make anymore changes to the machine and force your computer to restart in OOBE.','Automate Sysprep process?', 'YesNo','Information')<br>
+          &nbsp;&nbsp;switch ($syspreprun){<br>
+          &nbsp;&nbsp;'Yes' {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;Start-Process '\\NETWORK\PATH\RunPriorToSysprep.ps1' -Wait<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+          <br>
+          &nbsp;&nbsp;'No' {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;[System.Windows.MessageBox]::Show('You can find the automated sysprep script at \\NETWORK\PATH\RunPriorToSysprep.ps1 run this script once you are all finished with configurations and ready to capture base image.','Info','Ok','Information')<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </code>
+      </div>
+      <h4>If they choose yes it will start the automated sysprep process and if they choose no it will tell them where to find the script when ready.</h4>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>RunPriorToSysprep.ps1</b>
+      </h3>
+      <h4>
+        Earlier on I mentioned the local users we use to manage the machine. Well we want to make sure we delete the user before running sysprep.
+        If we do not delete the user before running sysprep it will keep the users profile cached and not allow us to use the account when going through
+        the OOBE. If you try using the same user the machine will throw and error like <i>This user is already created</i>.
+        This is a problem because we will have to create an alternative local account and do additional configurations when going through the deployment process.
+        We need to delete the user in two places; advanced system properties (windows + pause/break) &amp; local user and group manager (lusrmgr.msc).
+        I created a script that will delete the user profiles in each location. It is important the order in which it is done. Replace <i>USER</i> with the name
+        of the local account.
+      </h4>
+      <div class="well well-sm">
+        <code>
+          ##Deletes the <i>USER</i> user account<br>
+          Get-WmiObject -Class Win32_UserProfile | where {$_.LocalPath.split()[-1] -eq 'Administrator.<i>USER</i>'} | foreach {$_.Delete()}<br>
+          $Computername = $env:COMPUTERNAME<br>
+          &nbsp;&nbsp;$ADSIComp = [adsi]"WinNT://$Computername"<br>
+          $ADSIComp.Delete('User','<i>USER</i>')
+        </code>
+      </div>
+      <h4>Once the user is deleted I will clean out the temp directory with</h4>
+      <div class="well well-sm">
+        <code>
+          ##Cleans out the C:\Windows\Temp directory<br>
+          rmdir "C:\Windows\Temp\*" -ErrorAction SilentlyContinue
+        </code>
+      </div>
+      <h4>and then start the automated sysprep batch script with</h4>
+      <div class="well well-sm">
+        <code>
+          ##Starts automated sysprep script<br>
+          Start-Process 'C:\Windows\System32\Sysprep\automatedsysprep.bat'
+        </code>
+      </div>
+      <hr>
+    </div>
+
+    <div class="row">
+      <h3>
+        <b>automatedsysprep.bat</b>
+      </h3>
+      <h4>The automated sysprep batch file is very simple</h4>
+      <div class="well well-sm">
+        <code>
+          cd /d C:\Windows\System32\Sysprep<br>
+          sysprep.exe /oobe /shutdown /quiet
+        </code>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
