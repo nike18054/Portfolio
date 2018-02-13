@@ -1,0 +1,87 @@
+/* CSS code for Project 3 */
+
+h1, h2 {
+  color: blue;
+  text-decoration: underline;
+}
+
+div#ordered h2 {
+  color: green;
+  font-weight: lighter;
+}
+
+div#unordered li {
+  color: red;
+  font-variant: small-caps;
+}
+
+#mytable {
+  margin: 70px;
+  border: 1px solid green;
+}
+
+a {
+  text-decoration: none;
+  font-size: 0.65cm;
+}
+
+a:link {
+    color: yellow;
+    background-color: blue;
+}
+
+/*after you have clicked on the link this class applies*/
+a:visited {
+  color: blue;
+  background-color: yellow;
+}
+
+/*when hovering over all anchor elements this class applies*/
+a:hover {
+  color: green;
+  background-color: white;
+}
+
+/* Project 4   HTML Attributes*/
+#mytable caption {
+  margin: 5px;
+  border: 1px dashed green;
+  padding: 5px;
+  width: 250px;
+}
+#mytable th {
+  margin: 5px;
+  border: 1px solid black;
+  background-color: lightblue;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#mytable tbody > td {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-left: 1 solid black;
+  border-right: 1 solid black;
+  border-top: 1 solid black;
+  border-bottom: 1 solid black;
+}
+#mytable tfoot > td{
+  text-align: center;
+  font-size: 30px;
+  background-color: lightsalmon;
+}
+#mytable tfoot > td > img {
+  margin-left: 45px;
+  margin-right: 45px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
